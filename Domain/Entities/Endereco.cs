@@ -76,22 +76,22 @@ public class Endereco
     private static void ValidarDados(string rua, string numero, string bairro, string cep, string cidade, string estado)
     {
         if (string.IsNullOrWhiteSpace(rua))
-            throw new ArgumentException("Rua n�o pode ser vazia", nameof(rua));
+            throw new ArgumentException("Rua não pode ser vazia", nameof(rua));
 
         if (string.IsNullOrWhiteSpace(numero))
-            throw new ArgumentException("N�mero n�o pode ser vazio", nameof(numero));
+            throw new ArgumentException("Número não pode ser vazio", nameof(numero));
 
         if (string.IsNullOrWhiteSpace(bairro))
-            throw new ArgumentException("Bairro n�o pode ser vazio", nameof(bairro));
+            throw new ArgumentException("Bairro não pode ser vazio", nameof(bairro));
 
         if (string.IsNullOrWhiteSpace(cep))
-            throw new ArgumentException("CEP n�o pode ser vazio", nameof(cep));
+            throw new ArgumentException("CEP não pode ser vazio", nameof(cep));
 
         if (!ValidarCep(cep))
-            throw new ArgumentException("CEP inv�lido. Use o formato XXXXX-XXX", nameof(cep));
+            throw new ArgumentException("CEP inválido. Use o formato XXXXX-XXX", nameof(cep));
 
         if (string.IsNullOrWhiteSpace(cidade))
-            throw new ArgumentException("Cidade n�o pode ser vazia", nameof(cidade));
+            throw new ArgumentException("Cidade não pode ser vazia", nameof(cidade));
 
         if (string.IsNullOrWhiteSpace(estado) || estado.Length != 2)
             throw new ArgumentException("Estado deve ser uma sigla com 2 caracteres (ex: SP, RJ)", nameof(estado));
