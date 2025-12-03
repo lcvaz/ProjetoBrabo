@@ -1,3 +1,5 @@
+using Domain.Enums;
+
 namespace Domain.Entities;
 
 /// <summary>
@@ -44,7 +46,7 @@ public class Cliente : Usuario
         Nome = nome;
         Email = email;
         Telefone = telefone;
-        TipoUsuario = Domain.Enums.TipoUsuario.Cliente;
+        TipoUsuario = TipoUsuario.Cliente;
     }
 
     /// <summary>
