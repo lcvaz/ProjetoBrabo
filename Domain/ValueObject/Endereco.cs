@@ -1,4 +1,4 @@
-namespace Domain.Entities;
+namespace Domain.ValueObject;
 
 /// <summary>
 /// Value Object que representa um endere�o.

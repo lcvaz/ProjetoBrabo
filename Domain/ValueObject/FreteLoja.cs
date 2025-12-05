@@ -1,4 +1,4 @@
-namespace Domain.ValueObjects;
+namespace Domain.ValueObject;
 
 /// <summary>
 /// Value Object que representa o frete cobrado por uma loja específica
