@@ -221,24 +221,6 @@ public class Loja
         DataModificacao = DateTime.UtcNow;
     }
     
-    /// <summary>
-    /// Calcula o frete com base no tipo de tarifa e distância
-    /// </summary>
-    public decimal CalcularFrete(decimal distanciaEmKm)
-    {
-        if (distanciaEmKm < 0)
-            throw new ArgumentException("Distância não pode ser negativa", nameof(distanciaEmKm));
-        
-        return TipoTarifa switch
-        {
-            TipoTarifa.Gratis => 0m,
-            TipoTarifa.Fixa => ValorTarifa,
-            TipoTarifa.PorKm => ValorTarifa * distanciaEmKm,
-            TipoTarifa.PorFaixaDistancia => throw new NotImplementedException("Cálculo por faixa de distância será implementado futuramente"),
-            _ => throw new InvalidOperationException("Tipo de tarifa inválido")
-        };
-    }
-    
     public override bool Equals(object? obj)
     {
         if (obj is not Loja other)
