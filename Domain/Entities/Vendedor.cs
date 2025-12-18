@@ -12,12 +12,12 @@ public class Vendedor : Usuario
     /// <summary>
     /// Número do documento do vendedor (CPF ou CNPJ)
     /// </summary>
-    public string DocumentNumber { get; set; } = string.Empty;
+    public string NumeroDocumento { get; set; } = string.Empty;
 
     /// <summary>
     /// Avaliação média do vendedor (0.0 a 5.0)
     /// </summary>
-    public decimal Rating { get; set; } = 0.0m;
+    public decimal Avaliacao { get; set; } = 0.0m;
 
     /// <summary>
     /// Coleção de lojas do vendedor (máximo de 2 lojas permitidas)
@@ -29,10 +29,15 @@ public class Vendedor : Usuario
     /// </summary>
     // public ICollection<Post> Posts { get; set; } = new List<Post>();
 
-    /// <summary>
-    /// Coleção de conexões do vendedor com outros vendedores/fornecedores
+   /// <summary>
+    /// Coleção de conexões iniciadas pelo vendedor (solicitações enviadas)
     /// </summary>
-    public ICollection<Conexao> Conexoes { get; set; } = new List<Conexao>();
+    public ICollection<Conexao> ConexoesIniciadas { get; set; } = new List<Conexao>();
+
+    /// <summary>
+    /// Coleção de conexões recebidas pelo vendedor (solicitações recebidas)
+    /// </summary>
+    public ICollection<Conexao> ConexoesRecebidas { get; set; } = new List<Conexao>();
 
     /// <summary>
     /// Construtor padrão do Vendedor
@@ -47,12 +52,12 @@ public class Vendedor : Usuario
     /// </summary>
     /// <param name="nome">Nome completo do vendedor</param>
     /// <param name="email">Email do vendedor</param>
-    /// <param name="documentNumber">CPF ou CNPJ do vendedor</param>
-    public Vendedor(string nome, string email, string documentNumber) : base()
+    /// <param name="numeroDocumento">CPF ou CNPJ do vendedor</param>
+    public Vendedor(string nome, string email, string numeroDocumento) : base()
     {
         Nome = nome;
         Email = email;
-        DocumentNumber = documentNumber;
+        NumeroDocumento = numeroDocumento;
         TipoUsuario = TipoUsuario.Vendedor;
     }
 
@@ -96,7 +101,51 @@ public class Vendedor : Usuario
 
         // o rating deve ser a media do antigo rating com o novo
 
-        Rating = (novoRating + Rating) / 2;
+        Avaliacao = (novoRating + Avaliacao) / 2;
         AtualizadoEm = DateTime.UtcNow;
     }
+
+    /// <summary>
+    /// Obtém todas as solicitações de conexão pendentes recebidas pelo vendedor
+    /// </summary>
+    /// <returns>Lista de conexões recebidas com status Pendente</returns>
+    public IEnumerable<Conexao> ObterSolicitacoesPendentes()
+    {
+        return ConexoesRecebidas.Where(c => c.EstaPendente);
+    }
+
+    /// <summary>
+    /// Obtém todas as conexões ativas (aceitas) do vendedor
+    /// </summary>
+    /// <returns>Lista de conexões com status Aceita</returns>
+    public IEnumerable<Conexao> ObterConexoesAceitas()
+    {
+        var iniciadas = ConexoesIniciadas.Where(c => c.EstaAtiva);
+        var recebidas = ConexoesRecebidas.Where(c => c.EstaAtiva);
+        return iniciadas.Concat(recebidas);
+    }
+
+    /// <summary>
+    /// Obtém todas as solicitações de conexão enviadas e ainda pendentes
+    /// </summary>
+    /// <returns>Lista de conexões iniciadas com status Pendente</returns>
+    public IEnumerable<Conexao> ObterSolicitacoesEnviadas()
+    {
+        return ConexoesIniciadas.Where(c => c.EstaPendente);
+    }
+
+    public bool EstaConectadoCom(Guid outroVendedorId)
+    {
+        return ObterConexoesAceitas().Any(c => c.EnvolveVendedor(outroVendedorId));
+    }
+
+    /// <summary>
+    /// Obtém o total de conexões ativas do vendedor
+    /// </summary>
+    public int TotalConexoes => ObterConexoesAceitas().Count();
+
+    /// <summary>
+    /// Verifica se o vendedor tem conexões ativas
+    /// </summary>
+    public bool TemConexoes => TotalConexoes > 0;
 }
