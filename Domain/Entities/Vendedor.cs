@@ -30,9 +30,14 @@ public class Vendedor : Usuario
     public ICollection<Post> Posts { get; set; } = new List<Post>();
 
     /// <summary>
-    /// Coleção de conexões do vendedor com outros vendedores/fornecedores
+    /// Coleção de conexões iniciadas pelo vendedor (solicitações enviadas)
     /// </summary>
-    public ICollection<Conexao> Conexoes { get; set; } = new List<Conexao>();
+    public ICollection<Conexao> ConexoesIniciadas { get; set; } = new List<Conexao>();
+
+    /// <summary>
+    /// Coleção de conexões recebidas pelo vendedor (solicitações recebidas)
+    /// </summary>
+    public ICollection<Conexao> ConexoesRecebidas { get; set; } = new List<Conexao>();
 
     /// <summary>
     /// Construtor padrão do Vendedor
@@ -97,4 +102,53 @@ public class Vendedor : Usuario
         Rating = novoRating;
         AtualizadoEm = DateTime.UtcNow;
     }
+
+    /// <summary>
+    /// Obtém todas as conexões ativas (aceitas) do vendedor
+    /// </summary>
+    /// <returns>Lista de conexões com status Aceita</returns>
+    public IEnumerable<Conexao> ObterConexoesAceitas()
+    {
+        var iniciadas = ConexoesIniciadas.Where(c => c.EstaAtiva);
+        var recebidas = ConexoesRecebidas.Where(c => c.EstaAtiva);
+        return iniciadas.Concat(recebidas);
+    }
+
+    /// <summary>
+    /// Obtém todas as solicitações de conexão pendentes recebidas pelo vendedor
+    /// </summary>
+    /// <returns>Lista de conexões recebidas com status Pendente</returns>
+    public IEnumerable<Conexao> ObterSolicitacoesPendentes()
+    {
+        return ConexoesRecebidas.Where(c => c.EstaPendente);
+    }
+
+    /// <summary>
+    /// Obtém todas as solicitações de conexão enviadas e ainda pendentes
+    /// </summary>
+    /// <returns>Lista de conexões iniciadas com status Pendente</returns>
+    public IEnumerable<Conexao> ObterSolicitacoesEnviadas()
+    {
+        return ConexoesIniciadas.Where(c => c.EstaPendente);
+    }
+
+    /// <summary>
+    /// Verifica se o vendedor está conectado (conexão aceita) com outro vendedor específico
+    /// </summary>
+    /// <param name="outroVendedorId">ID do outro vendedor</param>
+    /// <returns>True se existe uma conexão ativa entre os vendedores</returns>
+    public bool EstaConectadoCom(Guid outroVendedorId)
+    {
+        return ObterConexoesAceitas().Any(c => c.EnvolveVendedor(outroVendedorId));
+    }
+
+    /// <summary>
+    /// Obtém o total de conexões ativas do vendedor
+    /// </summary>
+    public int TotalConexoes => ObterConexoesAceitas().Count();
+
+    /// <summary>
+    /// Verifica se o vendedor tem conexões ativas
+    /// </summary>
+    public bool TemConexoes => TotalConexoes > 0;
 }
