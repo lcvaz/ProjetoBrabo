@@ -1,1 +1,104 @@
-<p>login works!</p>
+<div class="login-container">
+  <div class="login-wrapper">
+    <!-- Logo/Título -->
+    <div class="login-header">
+      <h1 class="app-title">Marketplace</h1>
+      <p class="app-subtitle">Bem-vindo de volta!</p>
+    </div>
+
+    <!-- Card de Login -->
+    <mat-card class="login-card">
+      <mat-card-header>
+        <mat-card-title>Entrar</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Mensagem de Erro -->
+        <div *ngIf="errorMessage" class="error-message">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <!-- Formulário -->
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <!-- Campo Email -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              type="email"
+              formControlName="email"
+              placeholder="seu@email.com"
+              autocomplete="email"
+            />
+            <mat-icon matPrefix>email</mat-icon>
+            <mat-error *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+              {{ getEmailErrorMessage() }}
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Campo Senha -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Senha</mat-label>
+            <input
+              matInput
+              [type]="hidePassword ? 'password' : 'text'"
+              formControlName="password"
+              placeholder="Sua senha"
+              autocomplete="current-password"
+            />
+            <mat-icon matPrefix>lock</mat-icon>
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="hidePassword = !hidePassword"
+              [attr.aria-label]="'Esconder senha'"
+              [attr.aria-pressed]="hidePassword"
+            >
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+              {{ getPasswordErrorMessage() }}
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Link Esqueci a Senha -->
+          <div class="forgot-password">
+            <a routerLink="/auth/forgot-password" class="link">Esqueceu a senha?</a>
+          </div>
+
+          <!-- Botão de Submit -->
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            class="full-width login-button"
+            [disabled]="isLoading"
+          >
+            <span *ngIf="!isLoading">Entrar</span>
+            <mat-spinner *ngIf="isLoading" diameter="20" class="button-spinner"></mat-spinner>
+          </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="divider">
+          <span>ou</span>
+        </div>
+
+        <!-- Link para Cadastro -->
+        <div class="register-link">
+          <p>
+            Não tem uma conta?
+            <a routerLink="/auth/register" class="link">Cadastre-se</a>
+          </p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p>&copy; 2025 Marketplace Platform. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</div>
