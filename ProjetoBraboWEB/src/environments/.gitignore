@@ -1,6 +1,0 @@
-# Ignore arquivos de environment locais/personalizados
-environment.local.ts
-environment.*.local.ts
-
-# Ignore arquivos com secrets
-*.secret.ts
